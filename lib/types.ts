@@ -1,18 +1,16 @@
-export type ContentType = 'live_alert' | 'analysis' | 'weekly_issue' | 'guide';
-export type ArticleStatus = 'draft' | 'approved' | 'rejected';
-
-export interface Article {
+export type Article = {
   id: string;
   slug: string;
   title: string;
   summary: string;
   content: string;
+  contentType: 'live_alert' | 'news_brief' | 'weekly_issue' | 'analysis';
+  status: 'draft' | 'approved' | 'rejected';
   sourceName: string;
   sourceUrl: string;
-  contentType: ContentType;
-  status: ArticleStatus;
-  company: string;
-  topic: string;
+  company?: string;
+  topic?: string;
   publishedAt: string;
   createdAt: string;
-}
+  updatedAt: string;
+};
