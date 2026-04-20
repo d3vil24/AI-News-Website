@@ -17,21 +17,21 @@ export async function POST(request: Request) {
   }
 
   const article: Article = {
-    id: body.id ?? crypto.randomUUID(),
-    title: body.title,
-    slug: body.slug,
-    summary: body.summary,
-    content: body.content,
-    sourceName: body.sourceName,
-    sourceUrl: body.sourceUrl,
-    contentType: body.contentType,
-    status: body.status ?? 'approved',
-    company: body.company ?? '',
-    topic: body.topic ?? '',
-    publishedAt: body.publishedAt ?? new Date().toISOString(),
-    createdAt: body.createdAt ?? new Date().toISOString(),
-  };
-
+  id: body.id ?? crypto.randomUUID(),
+  title: body.title,
+  slug: body.slug,
+  summary: body.summary,
+  content: body.content,
+  sourceName: body.sourceName,
+  sourceUrl: body.sourceUrl,
+  contentType: body.contentType,
+  status: body.status ?? 'approved',
+  company: body.company ?? '',
+  topic: body.topic ?? '',
+  publishedAt: body.publishedAt ?? new Date().toISOString(),
+  createdAt: body.createdAt ?? new Date().toISOString(),
+  updatedAt: new Date().toISOString()
+};
   const saved = await upsertArticle(article);
 
   return NextResponse.json({ success: true, article: saved });
