@@ -1,0 +1,62 @@
+[
+  {
+    "id": "1",
+    "slug": "openai-launches-enterprise-agent-tooling",
+    "title": "OpenAI launches enterprise agent tooling for workflow automation",
+    "summary": "OpenAI introduced new enterprise agent capabilities aimed at helping teams automate internal workflows and document-heavy tasks.",
+    "content": "## What happened\nOpenAI introduced a new enterprise-focused agent tooling layer designed to help companies automate internal research, documentation, and operations tasks.\n\n## Why it matters\nThis expands the practical use of AI agents from demos into repeatable business workflows. Companies evaluating AI automation will likely compare these features against Microsoft, Anthropic, and Google offerings.\n\n## What to watch\nPricing, security controls, and integration depth will determine how quickly enterprise teams adopt the new stack.",
+    "sourceName": "Official Blog",
+    "sourceUrl": "https://example.com/openai-agent-tooling",
+    "contentType": "live_alert",
+    "status": "approved",
+    "company": "OpenAI",
+    "topic": "AI Agents",
+    "publishedAt": "2026-04-20T09:00:00.000Z",
+    "createdAt": "2026-04-20T09:00:00.000Z"
+  },
+  {
+    "id": "2",
+    "slug": "anthropic-model-pricing-shifts-enterprise-market",
+    "title": "Anthropic pricing shifts put pressure on enterprise AI budgets",
+    "summary": "Anthropic's latest pricing adjustments could push more buyers to reassess long-term model costs and multi-vendor strategies.",
+    "content": "## Overview\nAnthropic updated parts of its model pricing structure, increasing pressure on procurement teams to compare total usage costs.\n\n## Analysis\nPricing changes often reshape enterprise vendor selection more than benchmark headlines. Teams increasingly care about cost predictability, latency, and compliance.\n\n## Bottom line\nExpect more comparison traffic and budget-focused searches as buyers re-evaluate AI vendors.",
+    "sourceName": "Industry Analysis",
+    "sourceUrl": "https://example.com/anthropic-pricing",
+    "contentType": "analysis",
+    "status": "approved",
+    "company": "Anthropic",
+    "topic": "Model Pricing",
+    "publishedAt": "2026-04-19T10:30:00.000Z",
+    "createdAt": "2026-04-19T10:30:00.000Z"
+  },
+  {
+    "id": "3",
+    "slug": "weekly-issue-16-april-2026",
+    "title": "AI Pulse Weekly Issue #16",
+    "summary": "This week's biggest AI stories across agents, open-source models, chip infrastructure, and enterprise adoption.",
+    "content": "## In this issue\n- Enterprise agent launches\n- Open-source model competition\n- New inference infrastructure moves\n- AI regulation watch\n\n## Editor note\nThis issue focuses on which developments have immediate business implications rather than social buzz.",
+    "sourceName": "AI Pulse Editorial",
+    "sourceUrl": "https://example.com/weekly-16",
+    "contentType": "weekly_issue",
+    "status": "approved",
+    "company": "",
+    "topic": "Weekly Roundup",
+    "publishedAt": "2026-04-18T06:00:00.000Z",
+    "createdAt": "2026-04-18T06:00:00.000Z"
+  },
+  {
+    "id": "4",
+    "slug": "google-deepmind-agent-research-note",
+    "title": "Google DeepMind outlines next phase of agent research",
+    "summary": "A new DeepMind research note highlights planning, memory, and evaluation as the next key battlegrounds for capable agent systems.",
+    "content": "## Summary\nGoogle DeepMind's latest note focuses on the practical limits of agent performance in real environments.\n\n## Why it matters\nThe research reinforces that evaluation and memory remain major blockers for reliable deployment.\n\n## Takeaway\nThe next wave of AI products will likely compete on reliability, not just raw model quality.",
+    "sourceName": "Research Blog",
+    "sourceUrl": "https://example.com/deepmind-note",
+    "contentType": "live_alert",
+    "status": "draft",
+    "company": "Google",
+    "topic": "AI Research",
+    "publishedAt": "2026-04-20T11:15:00.000Z",
+    "createdAt": "2026-04-20T11:15:00.000Z"
+  }
+]

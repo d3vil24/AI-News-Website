@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html, body {
+  min-height: 100%;
+}
+
+body {
+  @apply bg-ink text-white antialiased;
+}
+
+a {
+  @apply transition-colors;
+}
+
+.prose-custom p {
+  @apply mb-4 leading-7 text-slate-300;
+}
+
+.prose-custom h2 {
+  @apply mt-8 mb-4 text-2xl font-semibold text-white;
+}
+
+.prose-custom ul {
+  @apply mb-4 list-disc space-y-2 pl-5 text-slate-300;
+}
