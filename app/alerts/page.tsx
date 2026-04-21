@@ -1,23 +1,23 @@
-export const dynamic = 'force-dynamic';
 
-import { ArticleCard } from '@/components/article-card';
-import { SectionTitle } from '@/components/section-title';
-import { getApprovedArticles } from '@/lib/storage';
-
-export const metadata = {
-  title: 'Live Alerts',
-  description: 'Latest approved live alerts for AI news.',
-};
+import { getApprovedArticles } from "@/lib/storage";
+import { ArticleCard } from "@/components/article-card";
+import { SectionTitle } from "@/components/section-title";
 
 export default async function AlertsPage() {
-  const alerts = (await getApprovedArticles()).filter((item) => item.contentType === 'live_alert');
+  const alerts = (await getApprovedArticles()).filter((item) => item.contentType === "live_alert");
 
   return (
-    <div className="mx-auto max-w-6xl px-6 py-12">
-      <SectionTitle title="AI Live Alerts" description="Fast, reviewable updates for the latest AI stories." />
+    <main className="mx-auto max-w-7xl px-4 py-10">
+      <SectionTitle
+        eyebrow="Pulse"
+        title="Live Alerts"
+        subtitle="Fast-moving updates on launches, funding, product changes, and major AI ecosystem moments."
+      />
       <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-        {alerts.map((article) => <ArticleCard key={article.id} article={article} />)}
+        {alerts.map((article) => (
+          <ArticleCard key={article.id} article={article} />
+        ))}
       </div>
-    </div>
+    </main>
   );
 }

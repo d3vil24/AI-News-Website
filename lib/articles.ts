@@ -1,6 +1,12 @@
+
 import { Article, ArticleStatus } from "@/lib/types";
 import { slugify } from "@/lib/utils";
-import { findArticleBySlug, getApprovedArticles, readArticles, upsertArticle as saveArticle } from "@/lib/storage";
+import {
+  findArticleBySlug,
+  getApprovedArticles,
+  readArticles,
+  upsertArticle as saveArticle,
+} from "@/lib/storage";
 
 export async function listPublishedArticles(limit = 20): Promise<Article[]> {
   const items = await getApprovedArticles();
@@ -12,9 +18,7 @@ export async function listAdminArticles(status?: ArticleStatus): Promise<Article
   const filtered = status ? items.filter((item) => item.status === status) : items;
 
   return [...filtered].sort(
-    (a, b) =>
-      new Date(b.createdAt).getTime() -
-      new Date(a.createdAt).getTime()
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   );
 }
 
@@ -40,6 +44,8 @@ export async function upsertArticle(input: Partial<Article> & { title: string })
     publishedAt: input.publishedAt ?? now,
     createdAt: input.createdAt ?? now,
     updatedAt: now,
+    imageUrl: input.imageUrl ?? null,
+    authorName: input.authorName ?? "AI Pulse Desk",
   };
 
   return saveArticle(article);
@@ -56,9 +62,7 @@ export async function updateArticle(id: string, patch: Partial<Article>): Promis
   const updated: Article = {
     ...existing,
     ...patch,
-    slug:
-      patch.slug ??
-      (patch.title ? slugify(patch.title) : existing.slug),
+    slug: patch.slug ?? (patch.title ? slugify(patch.title) : existing.slug),
     updatedAt: new Date().toISOString(),
   };
 

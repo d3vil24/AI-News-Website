@@ -1,12 +1,25 @@
-export default function EditorialPage() {
+
+import { getApprovedArticles } from "@/lib/storage";
+import { ArticleCard } from "@/components/article-card";
+import { SectionTitle } from "@/components/section-title";
+
+export default async function EditorialPage() {
+  const editorials = (await getApprovedArticles()).filter((item) =>
+    item.contentType === "editorial" || item.contentType === "article"
+  );
+
   return (
-    <div className="mx-auto max-w-4xl px-6 py-12">
-      <h1 className="text-4xl font-semibold text-white">Editorial Policy</h1>
-      <div className="prose-custom mt-8">
-        <p>AI Pulse uses AI for discovery, clustering, summaries, and draft preparation. Sensitive stories should be reviewed before publication.</p>
-        <p>Primary-source links should be retained in every story. Corrections and updates should be logged with timestamps.</p>
-        <p>Do not auto-publish rumors, legal disputes, policy changes, safety incidents, or unsupported benchmark claims.</p>
+    <main className="mx-auto max-w-7xl px-4 py-10">
+      <SectionTitle
+        eyebrow="Editorial"
+        title="Analysis & Editorial"
+        subtitle="Longer-form takes, market interpretation, strategic analysis, and AI industry context."
+      />
+      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+        {editorials.map((article) => (
+          <ArticleCard key={article.id} article={article} />
+        ))}
       </div>
-    </div>
+    </main>
   );
 }

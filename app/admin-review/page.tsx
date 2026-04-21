@@ -1,4 +1,5 @@
-import { getDraftArticles, updateArticleStatus } from "@/lib/storage";
+
+import { listAdminArticles, updateArticle } from "@/lib/articles";
 import { formatDate } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
 
@@ -6,110 +7,124 @@ async function updateStatus(formData: FormData) {
   "use server";
 
   const id = String(formData.get("id"));
-  const status = String(formData.get("status")) as
-    | "draft"
-    | "approved"
-    | "published"
-    | "rejected";
+  const status = String(formData.get("status")) as "draft" | "approved" | "published" | "rejected";
 
-  await updateArticleStatus(id, status);
+  await updateArticle(id, { status });
 
   revalidatePath("/admin-review");
   revalidatePath("/");
   revalidatePath("/alerts");
   revalidatePath("/weekly");
+  revalidatePath("/editorial");
 }
 
 export default async function AdminReviewPage() {
-  const articles = await getDraftArticles();
+  const articles = await listAdminArticles();
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-10">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold">Admin Review</h1>
-        <p className="mt-2 text-sm text-gray-600">
-          Review draft stories, approve them for publishing, or reject low-quality
-          submissions.
+    <main className="mx-auto max-w-7xl px-4 py-10">
+      <div className="mb-8 border-b border-white/10 pb-6">
+        <div className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan-400">
+          Admin
+        </div>
+        <h1 className="mt-3 text-4xl font-semibold text-white">Newsroom Review Queue</h1>
+        <p className="mt-3 max-w-2xl text-base leading-7 text-slate-300">
+          Review drafts, approve publishing candidates, reject weak stories, and manage the automated intake pipeline.
         </p>
+      </div>
+
+      <div className="mb-8 rounded-3xl border border-white/10 bg-white/[0.03] p-5">
+        <div className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">
+          Automation status
+        </div>
+        <div className="mt-3 grid gap-2 text-sm text-slate-300">
+          <div>• Draft ingestion scaffold is active</div>
+          <div>• Duplicate detection scaffold is active</div>
+          <div>• Auto-tagging scaffold is active</div>
+          <div>• Source fetch route available at <code>/api/fetch-sources</code></div>
+        </div>
       </div>
 
       <div className="grid gap-6">
         {articles.map((article) => (
           <article
             key={article.id}
-            className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
+            className="overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] shadow-xl shadow-black/10"
           >
-            <div className="mb-3 flex items-start justify-between gap-4">
-              <div>
-                <h2 className="text-xl font-semibold">{article.title}</h2>
+            <div className="grid gap-0 lg:grid-cols-[1fr_260px]">
+              <div className="p-6">
+                <div className="mb-3 flex flex-wrap items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                  <span>{(article.contentType ?? "article").replace(/_/g, " ")}</span>
+                  <span className="text-slate-600">•</span>
+                  <span>{article.status}</span>
+                  <span className="text-slate-600">•</span>
+                  <span>{formatDate(article.publishedAt)}</span>
+                </div>
 
-                <p className="mt-1 text-sm text-gray-500">
-                  {(article.contentType ?? "article").replace(/_/g, " ")}
-                  {article.topic ? ` • Topic: ${article.topic}` : ""}
-                  {article.company ? ` • Company: ${article.company}` : ""}
-                  {article.publishedAt
-                    ? ` • ${formatDate(article.publishedAt)}`
-                    : ""}
-                </p>
+                <h2 className="text-2xl font-semibold text-white">{article.title}</h2>
+
+                {article.summary ? (
+                  <p className="mt-3 text-sm leading-7 text-slate-300">{article.summary}</p>
+                ) : null}
+
+                {article.content ? (
+                  <div className="mt-4 max-h-48 overflow-auto rounded-2xl border border-white/10 bg-black/20 p-4 text-sm leading-6 text-slate-300 whitespace-pre-wrap">
+                    {article.content}
+                  </div>
+                ) : null}
+
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {article.topic ? (
+                    <span className="rounded-full bg-cyan-500/10 px-3 py-1 text-xs text-cyan-300">
+                      {article.topic}
+                    </span>
+                  ) : null}
+                  {article.company ? (
+                    <span className="rounded-full bg-violet-500/10 px-3 py-1 text-xs text-violet-300">
+                      {article.company}
+                    </span>
+                  ) : null}
+                  {article.sourceUrl ? (
+                    <a
+                      href={article.sourceUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="rounded-full border border-white/10 px-3 py-1 text-xs text-slate-300 hover:border-white/20"
+                    >
+                      Source →
+                    </a>
+                  ) : null}
+                </div>
               </div>
 
-              <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium uppercase tracking-wide">
-                {article.status}
-              </span>
-            </div>
+              <div className="border-t border-white/10 p-6 lg:border-l lg:border-t-0">
+                <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                  Actions
+                </div>
 
-            {article.summary ? (
-              <p className="mb-3 text-sm text-gray-700">{article.summary}</p>
-            ) : null}
+                <div className="mt-4 grid gap-3">
+                  {["draft", "approved", "published", "rejected"].map((status) => (
+                    <form action={updateStatus} key={status}>
+                      <input type="hidden" name="id" value={article.id} />
+                      <input type="hidden" name="status" value={status} />
+                      <button className="w-full rounded-2xl border border-white/10 px-4 py-3 text-left text-sm font-medium text-slate-200 transition hover:border-white/20 hover:bg-white/[0.04]">
+                        Mark as {status}
+                      </button>
+                    </form>
+                  ))}
+                </div>
 
-            {article.content ? (
-              <div className="mb-4 max-h-48 overflow-auto rounded-xl bg-gray-50 p-4 text-sm leading-6 text-gray-800 whitespace-pre-wrap">
-                {article.content}
+                <div className="mt-6 text-xs leading-6 text-slate-500">
+                  Author: {article.authorName || "AI Pulse Desk"}
+                </div>
               </div>
-            ) : null}
-
-            <div className="flex flex-wrap gap-3">
-              <form action={updateStatus}>
-                <input type="hidden" name="id" value={article.id} />
-                <input type="hidden" name="status" value="approved" />
-                <button className="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-medium text-white">
-                  Approve
-                </button>
-              </form>
-
-              <form action={updateStatus}>
-                <input type="hidden" name="id" value={article.id} />
-                <input type="hidden" name="status" value="rejected" />
-                <button className="rounded-xl bg-rose-600 px-4 py-2 text-sm font-medium text-white">
-                  Reject
-                </button>
-              </form>
-
-              <form action={updateStatus}>
-                <input type="hidden" name="id" value={article.id} />
-                <input type="hidden" name="status" value="published" />
-                <button className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white">
-                  Publish
-                </button>
-              </form>
-
-              {article.sourceUrl ? (
-                <a
-                  href={article.sourceUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="rounded-xl border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700"
-                >
-                  Open source
-                </a>
-              ) : null}
             </div>
           </article>
         ))}
 
         {!articles.length ? (
-          <div className="rounded-2xl border border-dashed border-gray-300 p-10 text-center text-sm text-gray-500">
-            No draft articles found.
+          <div className="rounded-3xl border border-dashed border-white/10 p-10 text-center text-sm text-slate-500">
+            No articles found in the newsroom queue.
           </div>
         ) : null}
       </div>

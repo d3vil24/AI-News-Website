@@ -1,3 +1,4 @@
+
 export type ArticleStatus =
   | "draft"
   | "approved"
@@ -28,4 +29,6 @@ export interface Article {
   publishedAt: string | null;
   createdAt: string;
   updatedAt: string;
+  imageUrl?: string | null;
+  authorName?: string | null;
 }

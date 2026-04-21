@@ -1,3 +1,4 @@
+
 export function slugify(value: string) {
   return value
     .toLowerCase()
@@ -27,4 +28,11 @@ export function formatDate(value: string | null | undefined) {
     month: "short",
     day: "numeric",
   });
+}
+
+export function calculateReadingTime(value: string | null | undefined) {
+  if (!value) return "1 min read";
+  const words = value.trim().split(/\s+/).filter(Boolean).length;
+  const minutes = Math.max(1, Math.ceil(words / 200));
+  return `${minutes} min read`;
 }

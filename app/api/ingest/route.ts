@@ -1,7 +1,9 @@
+
 import { NextRequest, NextResponse } from "next/server";
-import { upsertArticle } from "@/lib/storage";
+import { upsertArticle } from "@/lib/articles";
 import { excerpt, slugify } from "@/lib/utils";
 import { Article } from "@/lib/types";
+import { buildWhyItMatters } from "@/lib/newsroom";
 
 type IngestBody = {
   title: string;
@@ -15,6 +17,10 @@ type IngestBody = {
   company?: string;
   topic?: string;
   contentType?: Article["contentType"];
+  imageUrl?: string;
+  image_url?: string;
+  authorName?: string;
+  author_name?: string;
 };
 
 export async function POST(request: NextRequest) {
@@ -22,10 +28,7 @@ export async function POST(request: NextRequest) {
     const payload = (await request.json()) as IngestBody;
 
     if (!payload.title?.trim()) {
-      return NextResponse.json(
-        { ok: false, error: "Title is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ ok: false, error: "Title is required" }, { status: 400 });
     }
 
     const now = new Date().toISOString();
@@ -46,6 +49,8 @@ export async function POST(request: NextRequest) {
       publishedAt: now,
       createdAt: now,
       updatedAt: now,
+      imageUrl: payload.imageUrl ?? payload.image_url ?? null,
+      authorName: payload.authorName ?? payload.author_name ?? "AI Pulse Desk",
     };
 
     const saved = await upsertArticle(article);
@@ -53,6 +58,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       ok: true,
       article: saved,
+      whyItMatters: buildWhyItMatters(saved),
     });
   } catch (error) {
     console.error("POST /api/ingest failed", error);
