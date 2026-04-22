@@ -1,6 +1,8 @@
 import { MetadataRoute } from "next";
 import { getApprovedArticles } from "@/lib/storage";
 
+export const dynamic = "force-dynamic";
+
 function safeDate(value?: string | null) {
   if (!value) return new Date();
 
@@ -10,7 +12,14 @@ function safeDate(value?: string | null) {
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-  const articles = await getApprovedArticles();
+
+  let articles: Awaited<ReturnType<typeof getApprovedArticles>> = [];
+  try {
+    articles = await getApprovedArticles();
+  } catch {
+    // Supabase may not be reachable at build time — return static routes only
+    articles = [];
+  }
 
   const staticRoutes: MetadataRoute.Sitemap = [
     "",
