@@ -2,8 +2,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { upsertArticle } from "@/lib/articles";
 import { buildDraftFromSourceEntry, fetchSourceFeed, getFetchableSources } from "@/lib/ingestion";
+import { isAdminAuthorized } from "@/lib/auth";
 
 export async function GET(request: NextRequest) {
+  // Vercel Cron sends a special header — allow it through automatically
+  const isCron = request.headers.get("x-vercel-cron") === "1";
+  if (!isCron && !isAdminAuthorized(request)) {
+    return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+  }
+
   const sourceId = request.nextUrl.searchParams.get("sourceId");
   const allSources = getFetchableSources();
   const sources = sourceId ? allSources.filter((source) => source.id === sourceId) : allSources;

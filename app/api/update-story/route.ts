@@ -1,8 +1,13 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { updateArticle } from "@/lib/articles";
+import { isAdminAuthorized } from "@/lib/auth";
 
 export async function POST(request: NextRequest) {
+  if (!isAdminAuthorized(request)) {
+    return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     const { id, ...patch } = await request.json();
 

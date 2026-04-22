@@ -25,7 +25,7 @@ export default function AdminReviewPage() {
   async function loadArticles() {
     try {
       setLoading(true);
-      const response = await fetch("/api/articles", { cache: "no-store" });
+      const response = await fetch("/api/articles?status=all", { cache: "no-store" });
       const data = await response.json();
 
       const items = Array.isArray(data) ? data : data.articles || [];
@@ -49,10 +49,13 @@ export default function AdminReviewPage() {
     try {
       setProcessingId(id);
 
+      const adminToken = process.env.NEXT_PUBLIC_ADMIN_TOKEN ?? "";
+
       const response = await fetch("/api/admin-action", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          ...(adminToken ? { "x-api-key": adminToken } : {}),
         },
         body: JSON.stringify({ id, action }),
       });
