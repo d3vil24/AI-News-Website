@@ -21,6 +21,8 @@ type DbArticle = {
   publishedat?: string | null;
   createdat?: string | null;
   updatedat?: string | null;
+  imageurl?: string | null;
+  authorname?: string | null;
 };
 
 function readLocalArticles(): Article[] {
@@ -62,6 +64,8 @@ function mapDbToArticle(row: DbArticle): Article {
     publishedAt: row.publishedat ?? now,
     createdAt: row.createdat ?? now,
     updatedAt: row.updatedat ?? now,
+    imageUrl: row.imageurl ?? null,
+    authorName: row.authorname ?? "AI Pulse Desk",
   };
 }
 
@@ -81,6 +85,8 @@ function mapArticleToDb(article: Article) {
     publishedat: article.publishedAt,
     createdat: article.createdAt,
     updatedat: article.updatedAt,
+    imageurl: article.imageUrl ?? null,
+    authorname: article.authorName ?? "AI Pulse Desk",
   };
 }
 
