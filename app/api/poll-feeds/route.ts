@@ -1,20 +1,24 @@
 
 import { NextRequest, NextResponse } from "next/server";
-import { NEWS_SOURCES } from "@/lib/source-registry";
+import { fetchSourceFeed, getFetchableSources } from "@/lib/ingestion";
 
 export async function GET(request: NextRequest) {
   const sourceId = request.nextUrl.searchParams.get("sourceId");
+  const allSources = getFetchableSources();
+  const sources = sourceId ? allSources.filter((source) => source.id === sourceId) : allSources;
 
-  return NextResponse.json({
-    ok: true,
-    message: "Feed polling scaffold is active",
-    sourceId,
-    sources: NEWS_SOURCES.map((source) => ({
-      id: source.id,
-      name: source.name,
-      url: source.url,
-      rssUrl: source.rssUrl ?? null,
-    })),
-    note: "Attach actual RSS URLs and fetching logic here.",
-  });
+  const results = [];
+  for (const source of sources) {
+    const result = await fetchSourceFeed(source);
+    results.push({
+      source: source.name,
+      sourceId: source.id,
+      ok: result.ok,
+      error: result.error,
+      itemCount: result.items.length,
+      items: result.items.slice(0, 10),
+    });
+  }
+
+  return NextResponse.json({ ok: true, polled: results.length, results });
 }

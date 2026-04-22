@@ -1,5 +1,22 @@
-import type { NextConfig } from 'next'
+import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {}
+const nextConfig: NextConfig = {
+  experimental: {
+    serverActions: {
+      allowedOrigins: [
+        "*.app.github.dev",
+        "*.githubpreview.dev",
+        "localhost:3000",
+        "127.0.0.1:3000",
+      ],
+    },
+  },
+  allowedDevOrigins: [
+    "*.app.github.dev",
+    "*.githubpreview.dev",
+    "localhost:3000",
+    "127.0.0.1:3000",
+  ],
+};
 
-export default nextConfig
+export default nextConfig;

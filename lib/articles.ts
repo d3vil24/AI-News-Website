@@ -1,5 +1,5 @@
 
-import { Article, ArticleStatus } from "@/lib/types";
+import type { Article, ArticleStatus } from "@/lib/types";
 import { slugify } from "@/lib/utils";
 import {
   findArticleBySlug,

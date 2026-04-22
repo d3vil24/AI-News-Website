@@ -1,0 +1,9 @@
+
+{
+  "crons": [
+    {
+      "path": "/api/run-ingestion",
+      "schedule": "0 * * * *"
+    }
+  ]
+}
