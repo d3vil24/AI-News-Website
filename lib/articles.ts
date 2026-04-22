@@ -1,33 +1,60 @@
-
 import type { Article, ArticleStatus } from "@/lib/types";
 import { slugify } from "@/lib/utils";
 import {
   findArticleBySlug,
   getApprovedArticles,
   readArticles,
-  upsertArticle as saveArticle,
+  writeArticles,
 } from "@/lib/storage";
 
+/**
+ * PUBLIC LISTING
+ */
 export async function listPublishedArticles(limit = 20): Promise<Article[]> {
   const items = await getApprovedArticles();
   return items.slice(0, limit);
 }
 
+/**
+ * ADMIN LISTING
+ */
 export async function listAdminArticles(status?: ArticleStatus): Promise<Article[]> {
   const items = await readArticles();
-  const filtered = status ? items.filter((item) => item.status === status) : items;
+
+  const filtered = status
+    ? items.filter((item) => item.status === status)
+    : items;
 
   return [...filtered].sort(
-    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    (a, b) =>
+      new Date(b.createdAt).getTime() -
+      new Date(a.createdAt).getTime()
   );
 }
 
-export async function getArticleBySlug(slug: string): Promise<Article | null> {
+/**
+ * GET SINGLE
+ */
+export async function getArticleBySlug(
+  slug: string
+): Promise<Article | null> {
   return findArticleBySlug(slug);
 }
 
-export async function upsertArticle(input: Partial<Article> & { title: string }): Promise<Article> {
+/**
+ * UPSERT (USED IN INGESTION)
+ */
+export async function upsertArticle(
+  input: Partial<Article> & { title: string }
+): Promise<Article> {
+  const items = await readArticles();
   const now = new Date().toISOString();
+
+  const existingIndex = items.findIndex(
+    (item) =>
+      item.slug === input.slug ||
+      item.sourceUrl === input.sourceUrl
+  );
 
   const article: Article = {
     id: input.id ?? crypto.randomUUID(),
@@ -48,23 +75,51 @@ export async function upsertArticle(input: Partial<Article> & { title: string })
     authorName: input.authorName ?? "AI Pulse Desk",
   };
 
-  return saveArticle(article);
+  if (existingIndex !== -1) {
+    items[existingIndex] = {
+      ...items[existingIndex],
+      ...article,
+      updatedAt: now,
+    };
+  } else {
+    items.push(article);
+  }
+
+  await writeArticles(items);
+
+  return article;
 }
 
-export async function updateArticle(id: string, patch: Partial<Article>): Promise<Article> {
+/**
+ * 🔥 FIXED UPDATE (THIS WAS CRASHING BEFORE)
+ */
+export async function updateArticle(
+  id: string,
+  patch: Partial<Article>
+): Promise<Article> {
   const items = await readArticles();
-  const existing = items.find((item) => item.id === id);
 
-  if (!existing) {
+  const index = items.findIndex((item) => item.id === id);
+
+  if (index === -1) {
     throw new Error("Article not found");
   }
+
+  const existing = items[index];
 
   const updated: Article = {
     ...existing,
     ...patch,
-    slug: patch.slug ?? (patch.title ? slugify(patch.title) : existing.slug),
+    slug:
+      patch.slug ??
+      (patch.title ? slugify(patch.title) : existing.slug),
     updatedAt: new Date().toISOString(),
   };
 
-  return saveArticle(updated);
+  // ✅ direct write (no saveArticle abstraction)
+  items[index] = updated;
+
+  await writeArticles(items);
+
+  return updated;
 }

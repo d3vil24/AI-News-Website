@@ -584,11 +584,12 @@
     "sourceName": "Official Blog",
     "sourceUrl": "https://example.com/openai-agent-tooling",
     "contentType": "live_alert",
-    "status": "approved",
+    "status": "published",
     "company": "OpenAI",
     "topic": "AI Agents",
-    "publishedAt": "2026-04-20T09:00:00.000Z",
-    "createdAt": "2026-04-20T09:00:00.000Z"
+    "publishedAt": "2026-04-22T04:58:12.079Z",
+    "createdAt": "2026-04-20T09:00:00.000Z",
+    "updatedAt": "2026-04-22T04:58:12.080Z"
   },
   {
     "id": "2",
@@ -599,11 +600,12 @@
     "sourceName": "Industry Analysis",
     "sourceUrl": "https://example.com/anthropic-pricing",
     "contentType": "analysis",
-    "status": "approved",
+    "status": "published",
     "company": "Anthropic",
     "topic": "Model Pricing",
-    "publishedAt": "2026-04-19T10:30:00.000Z",
-    "createdAt": "2026-04-19T10:30:00.000Z"
+    "publishedAt": "2026-04-22T04:58:18.567Z",
+    "createdAt": "2026-04-19T10:30:00.000Z",
+    "updatedAt": "2026-04-22T04:58:18.567Z"
   },
   {
     "id": "3",
@@ -614,11 +616,12 @@
     "sourceName": "AI Pulse Editorial",
     "sourceUrl": "https://example.com/weekly-16",
     "contentType": "weekly_issue",
-    "status": "approved",
+    "status": "published",
     "company": "",
     "topic": "Weekly Roundup",
-    "publishedAt": "2026-04-18T06:00:00.000Z",
-    "createdAt": "2026-04-18T06:00:00.000Z"
+    "publishedAt": "2026-04-22T04:58:20.270Z",
+    "createdAt": "2026-04-18T06:00:00.000Z",
+    "updatedAt": "2026-04-22T04:58:20.271Z"
   },
   {
     "id": "4",
